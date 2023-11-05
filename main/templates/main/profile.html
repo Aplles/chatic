@@ -1,0 +1,415 @@
+{% extends 'main/layout.html' %}
+{% load static %}
+
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+
+    {% if request.user.is_authenticated %}
+
+
+
+        <div class="auth_logo">
+            <h1>Профиль</h1>
+        </div>
+
+        <div class="auth_block_space">
+            <div class="profile_card">
+                <div class="auth_block">
+
+                    <div class="image_container" >
+                        <img class="img-profile" src="{{ table.avatar.url }}" onerror="this.src='media/profile_images/avatar_site.jpg';"/>
+                        <h1 class="profile_name" style="white-space: nowrap;">{{ user.first_name }}, <mark style="color: #FF0060; background: none;">{{ table.age }}</mark></h1><p class="last_login">{{ user.last_login }}</p>
+
+                    </div>
+
+
+                    <div class="user_info">
+                        <div class="info_inside">
+                            <p><b><button class="friends" id="friendsButton" type="submit"><span class="material-icons-sharp add_friend">person_add</span> Друзья:  </button></b>  {{ table.get_friends_no }}</p> <br/>
+                            <h class="user_inf">Информация о пользователе</h>
+                            <hr class="hr_inf">
+
+                            <p><b>Увлечения: </b>{{ table.hobbies|default:"Не указано" }}</p>
+                            <p><b>Город: </b>{{ table.city|default:"Не указано" }}</p>
+                            <p><b>Цель: </b>{{ table.aim|default:"Не указано" }}</p>
+                            <p><b>Последний вход: </b></p>
+                            <p><b>О себе: </b>{{ table.bio|default:"Не указано" }}</p>
+
+
+
+                        </div>
+
+                    </div>
+                    <div class="profile_buttons">
+                        <button id="commButton" type="submit" class="edit">
+                            <span class="material-icons-sharp" style="font-size: 0.8rem;">edit</span>
+                            Редактировать
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
+
+        </div>
+
+        <div class="popup-container-wrapper">
+
+            <div class="overlay"></div>
+            <div class="popup-container">
+                <div class="popup-content">
+                    <span class="close" id="add-close">&times;</span>
+                    <h3 class="add-label" style="display: flex; justify-content: center;">Редактирование профиля</h3>
+                    {% if user_form.errors %}
+                        <div class="alert alert-danger alert-dismissible" role="alert">
+                            <div id="form_errors">
+                                {% for key, value in user_form.errors.items %}
+                                    <strong>{{ value }}</strong>
+                                {% endfor %}
+                            </div>
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    {% endif %}
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="form-row">
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <label class="small mb-1">Имя:</label>
+                                        {{ user_form.first_name }}
+                                    <hr>
+                                    <label class="small mb-1">Email:</label>
+                                        {{ user_form.email }}
+                                </div>
+                                <div class="form-group">
+                                    <hr>
+                                    <label class="small mb-1">Аватар:</label>
+                                    {{ profile_form.avatar }}
+                                </div>
+                                <hr>
+                                <label class="Age_label">Возраст:</label> {{ profile_form.age }}<hr>
+                                <label class="City_label">Город:</label> {{ profile_form.city }}<hr>
+                                <label class="Hobby_label">Хобби:</label> {{ profile_form.hobbies }}<hr>
+                                <label class="Aim_label">Цель:</label> {{ profile_form.aim }}<hr>
+
+                                <label class="small mb-1">О себе:</label> {{ profile_form.bio }}
+
+
+
+
+
+                            </div>
+                        </div>
+                        <br><br>
+                        <button type="submit" class="btn btn-dark btn-lg">Сохранить</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="popup-container1">
+                <div class="popup-content1">
+                    <span class="close" id="add-close1" >&times;</span>
+                    <div class="container_tab">
+                        <div class="tab">
+                            <div class="tab-content" id="content-1">
+                                {% if table.get_friends_no == 0 %}
+                                    <h5>Список пуст</h5>
+                                {% else %}
+                                    <div class="friends_1">
+                                        {% for obj in qs1 %}
+
+                                            {% if obj.user in friends_list %}
+                                                <div class="segment1">
+                                                    <div class="grid1">
+                                                        <div class="row1">
+                                                            <div class="column1">
+                                                                <img class="ui small circular image" style="min-width: 5rem; min-height: 5rem; max-width: 5rem; max-height: 5rem; clip-path: circle();" src={{obj.avatar.url}} onerror="this.src='media/profile_images/avatar_site.jpg';">
+                                                            </div>
+                                                            <div class="column2">
+                                                                <h5>{{ obj.user.first_name }}</h5>
+                                                                <h5>{{ obj.user }}</h5>
+                                                                <h5>{{ obj.hobbies }}</h5>
+
+                                                                <a href={{ obj.get_absolute_url }}>
+                                                                    <button type="submit" class="register_button">
+                                                                        Посмотреть профиль
+                                                                    </button>
+                                                                </a>
+
+
+                                                                {% if request.user in obj.friends.all %}
+                                                                    <form action="remove_friend" method="POST">
+                                                                        {% csrf_token %}
+                                                                        <input type="hidden" name="profile_pk" value={{obj.pk}}>
+
+                                                                            <button class="reject_friend addFriend" type="submit">
+                                                                                Удалить из друзей
+                                                                            </button>
+                                                                    </form>
+                                                                {% endif %}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="tab-content" id="content-2">
+                                {% if is_empty_f %}
+                                    <h5>Список пуст</h5>
+                                {% else %}
+                                    <div class="friends_1">
+                                        {% for obj in qs %}
+                                            <div class="segment1">
+                                                <div class="grid1">
+                                                    <div class="row1">
+                                                        <div class="column1">
+                                                            <img class="ui small circular image" style="min-width: 5rem; min-height: 5rem; max-width: 5rem; max-height: 5rem; clip-path: circle();" src={{obj.avatar.url}} onerror="this.src='media/profile_images/avatar_site.jpg';">
+                                                        </div>
+                                                        <div class="column2">
+                                                            <h5>{{ obj.user.first_name }}</h5>
+                                                            <h5>{{ obj.user }}</h5>
+                                                            <h5>{{ obj.hobbies }}</h5>
+
+                                                            <a href={{ obj.get_absolute_url }}>
+                                                                <button class="register_button">
+                                                                    Посмотреть профиль
+                                                                </button>
+                                                            </a>
+
+
+                                                            <form action="{% url 'accept_invite' %}" method="POST">
+                                                                {% csrf_token %}
+                                                                <input type="hidden" name="profile_pk" value={{obj.pk}}>
+                                                                <button type="submit" class="submit_friend">
+                                                                    Принять
+                                                                </button>
+                                                            </form>
+
+                                                            <form action="{% url 'reject_invite' %}" method="POST">
+                                                                {% csrf_token %}
+                                                                <input type="hidden" name="profile_pk" value={{obj.pk}}>
+                                                                <button type="submit" class="reject_friend">
+                                                                    Отклонить
+                                                                </button>
+
+                                                            </form>
+
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="tab-content" id="content-3">
+
+
+                                {% if is_empty %}
+                                    <h1>Список пуст</h1>
+                                {% endif %}
+                                <div class="friends_1">
+                                    {% for obj in qs1 %}
+                                        <div class="segment1">
+                                            <div class="grid1">
+                                                <div class="row1">
+                                                    <div class="column1">
+                                                        <img class="ui small circular image" style="min-width: 5rem; min-height: 5rem; max-width: 5rem; max-height: 5rem; clip-path: circle();" src="{{ obj.avatar.url }}" onerror="this.src='media/profile_images/avatar_site.jpg';">
+                                                    </div>
+                                                    <div class="column2">
+                                                        <h5>{{ obj.user.first_name }}</h5>
+                                                        <h5>{{ obj.user }}</h5>
+                                                        <h5>{{ obj.hobbies }}</h5>
+
+                                                        <a href={{ obj.get_absolute_url }}>
+                                                            <button type="submit" class="register_button">
+                                                                Посмотреть профиль
+                                                            </button>
+                                                        </a>
+
+                                                        {% if obj.user not in rel_receiver and obj.user not in rel_sender %}
+                                                            <form action="{% url 'send_invite' %}" method="POST">
+                                                                {% csrf_token %}
+                                                                <input type="hidden" name="profile_pk" value={{obj.pk}}>
+
+                                                                    <button class="addFriend" type="submit">
+                                                                        Добавить в друзья
+                                                                    </button>
+
+                                                            </form>
+                                                        {% endif %}
+
+                                                        {% if obj.user in rel_receiver and request.user not in obj.friends.all %}
+                                                            <button class="waitingApp">
+                                                                Ожидает подтверждения
+
+                                                            </button>
+
+                                                        {% endif %}
+
+                                                        {% if request.user in obj.friends.all %}
+                                                            <form action="remove_friend" method="POST">
+                                                                {% csrf_token %}
+                                                                <input type="hidden" name="profile_pk" value={{obj.pk}}>
+
+                                                                    <button class="addFriend" type="submit">
+                                                                        Удалить из друзей
+                                                                    </button>
+                                                            </form>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+
+                            </div>
+
+                            <div class="tab-nav">
+                                <input checked id="tab-btn-1" name="tab-btn" type="radio" value="">
+                                <label for="tab-btn-1">Список друзей</label>
+                                <input id="tab-btn-2" name="tab-btn" type="radio" value="">
+                                <label for="tab-btn-2">Полученные заявки</label>
+                                <input id="tab-btn-3" name="tab-btn" type="radio" value="">
+                                <label for="tab-btn-3">Добавить в друзья</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    {% else %}
+
+        <div class="auth_logo">
+            <h1>Авторизация</h1>
+        </div>
+
+        <div class="auth_block_space">
+            <div class="auth_block">
+                <div class="auth_block_button">
+                    <a href="{% url 'register' %}"><div class="register_button">Регистрация</div></a>
+                    <a href="{% url 'login' %}"><div class="register_button">Вход</div></a>
+                </div>
+            </div>
+        </div>
+        
+            
+    {% endif %}
+
+    <script>
+        const popup = document.querySelector(".popup-container-wrapper");
+
+        // Функция для отображения всплывающего окна
+        function showPopup() {
+            const popupContainer = document.querySelector('.popup-container');
+            const popupContent = document.querySelector('.popup-content');
+            popupContainer.style.display = 'flex';
+
+            // Выполнение анимации появления окна с помощью requestAnimationFrame
+            requestAnimationFrame(() => {
+                popupContainer.classList.add('active');
+                popupContent.style.opacity = 1;
+                popupContent.style.transform = 'scale(1)';
+            });
+        }
+
+        function isClickInsidePopup(event) {
+            const popupContainer = document.querySelector('.popup-container');
+            return popupContainer.contains(event.target);
+        }
+
+        // Функция для скрытия всплывающего окна
+        function hidePopup() {
+            const popupContainer = document.querySelector('.popup-container');
+            const popupContent = document.querySelector('.popup-content');
+            popupContainer.classList.remove('active');
+            popupContent.style.opacity = 0;
+            popupContent.style.transform = 'scale(0.8)';
+
+            // Задержка для завершения анимации перед скрытием окна
+            setTimeout(() => {
+                popupContainer.style.display = 'none';
+            }, 300); // Время анимации в миллисекундах, должно соответствовать времени анимации в CSS (0.3s)
+        }
+        hidePopup();
+        // Обработчик событий для кнопок "Редактировать"
+        document.querySelectorAll('.edit').forEach((button) => {
+            button.addEventListener('click', (event) => {
+                event.stopPropagation();
+                showPopup();
+            });
+        });
+
+        document.querySelector('.overlay').addEventListener('click', function() {
+            hidePopup();
+        });
+
+// Обработчик события для закрытия pop-up окна при клике на кнопку закрытия
+        document.getElementById("add-close").addEventListener("click", function() {
+            hidePopup();
+        });
+
+
+
+// Функция для отображения всплывающего окна 1
+        function showPopup1() {
+            const popupContainer1 = document.querySelector('.popup-container1');
+            const popupContent1 = document.querySelector('.popup-content1');
+            popupContainer1.style.display = 'flex';
+
+            // Выполнение анимации появления окна с помощью requestAnimationFrame
+            requestAnimationFrame(() => {
+                popupContainer1.classList.add('active');
+                popupContent1.style.opacity = 1;
+                popupContent1.style.transform = 'scale(1)';
+            });
+        }
+
+        function isClickInsidePopup1(event) {
+            const popupContainer1 = document.querySelector('.popup-container');
+            return popupContainer1.contains(event.target);
+        }
+
+        // Функция для скрытия всплывающего окна
+        function hidePopup1() {
+            const popupContainer1 = document.querySelector('.popup-container1');
+            const popupContent1 = document.querySelector('.popup-content1');
+            popupContainer1.classList.remove('active');
+            popupContent1.style.opacity = 0;
+            popupContent1.style.transform = 'scale(0.8)';
+
+            // Задержка для завершения анимации перед скрытием окна
+            setTimeout(() => {
+                popupContainer1.style.display = 'none';
+            }, 300); // Время анимации в миллисекундах, должно соответствовать времени анимации в CSS (0.3s)
+        }
+        hidePopup1();
+        // Обработчик событий для кнопок "Редактировать"
+        document.querySelectorAll('.friends').forEach((button) => {
+            button.addEventListener('click', (event) => {
+                event.stopPropagation();
+                showPopup1();
+            });
+        });
+
+        document.querySelector('.overlay').addEventListener('click', function() {
+            hidePopup1();
+        });
+
+// Обработчик события для закрытия pop-up окна при клике на кнопку закрытия
+        document.getElementById("add-close1").addEventListener("click", function() {
+            hidePopup1();
+        });
+
+    </script>
+
+{% endblock %}

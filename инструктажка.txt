@@ -1,0 +1,26 @@
+В консоли (из папки, где лежит файл manage.py)
+pip install pipenv
+pipenv shell
+pipenv sync
+
+
+В пайчерме
+1. File | Settings | Project: CurioSpace | Python Interpreter
+2. Add new
+3. Выбираешь pipenv
+4. Сверху выбираешь путь до базового питона
+5. Снизу указываешь путь до виртуального окружения
+C:\Users\Maxim\.virtualenvs\CurioSpace-2PMmkpJp\Scripts\pipenv.exe (Примерно такой будет)
+6. apply
+
+
+Запускаешь redis-server.exe
+
+
+Запускаешь сервер:
+python manage.py runserver
+
+Starting ASGI/Channels version 3.0.4 development server at http://127.0.0.1:8000/
+Quit the server with CTRL-BREAK.
+
+### Должен увидеть именно ASGI/Channels ###

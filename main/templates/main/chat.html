@@ -1,0 +1,207 @@
+
+
+{% extends 'main/layout.html' %}
+{% load static %}
+
+{% block title %}Chats{% endblock %}
+
+{% block script %}
+    <link rel="stylesheet" href="{% static 'main/css/chat.css' %}">
+
+    <script src="{% static 'main/js/jquery-3.6.0.min.js' %}"></script>
+    <script>
+        const socket = new WebSocket('ws://localhost:8000/ws/chat/' + {{chat.pk}} +'/');
+
+        socket.onmessage = function (e) {
+            const data = JSON.parse(e.data);
+            let content = ``;
+            if (data.user.toString() === `{{ user.id }}`.toString()) {
+                content = `<div class="message block-author-message"><h1>${data.message}</h1><a href="/${data.slug_user}"><p>${data.user_name}</p> <p>${data.avatar}</p> <img class="avatar" src="${data.avatar}" alt=""></a>`;
+            } else {
+                content = `<div class="message block-user-message"><h1>${data.message}</h1><a href="/${data.slug_user}"><p>${data.avatar}</p> <img class="avatar" src="${data.avatar}" alt=""></a>`;
+            }
+            if (data.file_content) {
+                let fileBlock = '';
+                if (data.is_image) {
+                    const imageSrc = data.file_content;
+                    fileBlock = `<div class="image-block"><a href="${imageSrc}" download="image.png"><img class="image" src="${imageSrc}" alt="Image" /></a></div>`;
+                    content += fileBlock;
+                    content += '</div>';
+                    $('#block-messages').append(content);
+                } else {
+                    const dataUrl = data.file_content;
+                    const blob = fetch(dataUrl).then(response => response.blob());
+                    Promise.all([blob]).then(([pdfBlob]) => {
+                        const blobURL = URL.createObjectURL(pdfBlob);
+                        const downloadLink = document.createElement('a');
+                        downloadLink.href = blobURL;
+                        downloadLink.download = data.file_name;
+                        downloadLink.textContent = data.file_name;
+                        fileBlock = document.createElement('div');
+                        fileBlock.className = 'file-block';
+                        fileBlock.appendChild(downloadLink);
+                        content += fileBlock.outerHTML;
+                        content += '</div>';
+                        $('#block-messages').append(content);
+                    });
+                }
+            } else {
+                $('#block-messages').append(content);
+            }
+
+            $("#text-message")[0].value = "";
+            $("#file-message")[0].value = "";
+        };
+
+        function isImageFile(fileName) {
+            const imageExtensions = ["jpg", "jpeg", "png", "gif", "bmp"];
+            const fileExtension = fileName.split('.').pop().toLowerCase();
+            return imageExtensions.includes(fileExtension);
+        }
+
+
+        function getCookie(c_name) {
+            if (document.cookie.length > 0) {
+                c_start = document.cookie.indexOf(c_name + "=");
+                if (c_start !== -1) {
+                    c_start = c_start + c_name.length + 1;
+                    c_end = document.cookie.indexOf(";", c_start);
+                    if (c_end === -1) c_end = document.cookie.length;
+                    return unescape(document.cookie.substring(c_start, c_end));
+                }
+            }
+            return "";
+        }
+
+        function send_ajax(fileContent, fileInput, message) {
+            let data = {
+                "message": message,
+                "chat": "{{ chat.pk }}",
+                "user": "{{ user.id }}",
+                "user_name" : "{{ user.first_name }}",
+                "avatar" : "{{ profile.avatar.url }}",
+                "slug_user" : "{{ profile.slug}}"
+            }
+            if (fileContent !== null && fileInput !== null) {
+                data['file_content'] = fileContent
+                data['file_name'] = fileInput.name
+                data['is_image'] = isImageFile(fileInput.name)
+            }
+            $.ajax({
+                type: "POST",
+                url: "{% url 'messages' %}",
+                processData: false,
+                contentType: "application/json",
+                dataType: "json",
+                data: JSON.stringify(data),
+                success: function (response) {
+                    socket.send(JSON.stringify(data));
+                },
+                error: function (response) {
+                    console.log(response);
+                }
+            });
+        }
+
+        $(document).ready(function () {
+            $.ajaxSetup({
+                headers: {
+                    "X-CSRFToken": getCookie("csrftoken"),
+                }
+            });
+            $(document).on('click', '#send_btn', function (e) {
+                let message = $("#text-message")[0].value;
+                let fileInput = $("#file-message")[0].files[0];
+                if (fileInput) {
+                    let reader = new FileReader();
+                    reader.onload = function () {
+                        let fileContent = reader.result;
+                        send_ajax(fileContent, fileInput, message);
+                    };
+                    reader.readAsDataURL(fileInput);
+                } else {
+                    send_ajax(null, null, message);
+                }
+
+                return false;
+            });
+        })
+    </script>
+
+{% endblock script %}
+
+{% block content %}
+
+    {% if request.user.is_authenticated %}
+        <div id="block-messages">
+            {% for message in messages %}
+                {% if message.user == user %}
+
+                        <div class="message block-author-message">
+                            <h1>{{ message.message }}</h1> <p>{{ message.user.first_name }}</p> <p> {{ message.user.profile }}</p>
+
+                                <img class="avatar" src="{{profile.avatar.url}}" alt="">
+
+                            {% if message.document %}
+                                <a href="{{ message.document.url }}" download="{{ message.document.name }}">
+                                    {{ message.document_name }}
+                                </a>
+                            {% elif message.image %}
+                                <div class="image-block">
+                                    <a href="{{ message.image.url }}" download="{{ message.image.name }}">
+                                        <img class="image" src="{{ message.image.url }}" alt="">
+                                    </a>
+                                </div>
+                            {% endif %}
+                        </div>
+
+                {% else %}
+
+                        <div class="message block-user-message">
+                            <h1>{{ message.message }} </h1> <p>{{ message.user.first_name }}</p>
+                            <a href="{% url 'profile_detail_view'  profile.slug %}">
+                                <img class="avatar" src="{{profile.avatar.url}}" alt="">
+                            </a>
+                            {% if message.document %}
+                                <a href="{{ message.document.url }}" download="{{ message.document.name }}">
+                                    {{ message.document_name }}
+                                </a>
+                            {% elif message.image %}
+                                <a href="{{ message.image.url }}" download="{{ message.image.name }}">
+                                    <img class="image" src="{{ message.image.url }}" alt="">
+                                </a>
+                            {% endif %}
+                        </div>
+
+                {% endif %}
+            {% endfor %}
+        </div>
+        <div>
+            <label for="text-message">Сообщение:</label>
+            <input type="text" id="text-message">
+            <input type="file" id="file-message">
+            <button id="send_btn">Отправить</button>
+        </div>
+    {% else %}
+
+        <div class="auth_logo">
+            <h1>Авторизация</h1>
+        </div>
+
+        <div class="auth_block_space">
+            <div class="auth_block">
+                <div class="auth_block_button">
+                    <a href="{% url 'register' %}">
+                        <div class="register_button">Регистрация</div>
+                    </a>
+                    <a href="{% url 'login' %}">
+                        <div class="register_button">Вход</div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+
+    {% endif %}
+
+{% endblock %}

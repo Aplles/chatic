@@ -1,0 +1,18 @@
+.message {
+    padding: 10px;
+    border: 2px solid gray;
+    margin-bottom: 2px;
+}
+
+.block-author-message {
+    text-align: right;
+}
+
+.block-author-message .image-block {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.image {
+    width: 100px;
+}

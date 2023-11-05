@@ -1,0 +1,102 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock%}</title>
+    <link rel="website icon" type="png" href="{% static 'main/img/logo4.png' %}">
+    <link rel="stylesheet" href="{% static 'main/css/main.css' %}">
+<!--    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">-->
+    <!-- <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">  -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" rel="stylesheet">
+    {% block script %}
+    {% endblock script %}
+</head>
+
+<body>
+    <div class="container">
+
+        <div class="dark-mode-pos">
+            <div class="dark-mode">
+                <span class="material-icons-sharp active">
+                    light_mode
+                </span>
+                <span class="material-icons-sharp">
+                    dark_mode
+                </span>
+            </div>
+        </div>
+
+        <aside>
+            <div class="toggle">
+                <div class="logo">
+                    <a href="{% url 'home' %}">
+                        <img class="image_logo" src="{% static 'main/img/logo4.png' %}">
+                        <h2 class="logo_name">Curio<span class="danger">Space</span></h2>
+                    </a>
+                </div>
+                <div class="close" id="close-btn">
+                    <span class="material-icons-sharp">
+                        close
+                    </span>
+                </div>
+            </div>
+            
+
+            <div class="sidebar">
+                 <a style="overflow: hidden;" href="{% url 'home' %}">  <!-- class="active" -->
+                    <span class="material-icons-sharp">
+                        person_outline
+                    </span>
+                    {% if request.user.is_authenticated %}
+                    <h3>{{ user.username }}</h3>
+                    {% else %}
+                    <h3>Профиль</h3>
+                    {% endif %}
+                </a>
+                <a href="{% url 'chats' %}">
+                    <span class="material-icons-sharp">
+                        search
+                    </span>
+                    <h3>Поиск чатов</h3>
+                </a>
+                <a href="{% url 'users_chats' %}">
+                    <span class="material-icons-sharp">
+                        receipt_long
+                    </span>
+                    <h3>Мои чаты</h3>
+                </a>
+
+
+                <a href="{% url 'logout' %}">
+                    <span class="material-icons-sharp">
+                        logout
+                    </span>
+                    <h3>Выход</h3>
+                </a>
+
+
+            </div>
+        </aside>
+            
+    
+        <script src="{% static 'main/js/app.js' %}"></script>   
+
+        
+
+        <main>
+            {% block content %}
+
+            {% endblock%}
+        </main>
+
+
+    </div>
+    
+</body>
+
+</html>

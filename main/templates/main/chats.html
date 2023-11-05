@@ -1,0 +1,41 @@
+{% extends 'main/layout.html' %}
+{% load static %}
+
+{% block title %}Chats{% endblock %}
+
+{% block content %}
+
+    {% if request.user.is_authenticated %}
+        <form action="{% url 'chats_search' %}" method="get">
+            <label for="search_chat">
+                Поиск чата: <input name="search" type="text" id="search_chat">
+            </label>
+            <button type="submit">Поиск</button>
+        </form>
+
+        <div>
+            {% for chat in chats %}
+                <div>
+                    <a href="{% url 'chat' chat.id %}"><h1>{{ chat.title }}</h1></a>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="auth_logo">
+            <h1>Авторизация</h1>
+        </div>
+        <div class="auth_block_space">
+            <div class="auth_block">
+                <div class="auth_block_button">
+                    <a href="{% url 'register' %}">
+                        <div class="register_button">Регистрация</div>
+                    </a>
+                    <a href="{% url 'login' %}">
+                        <div class="register_button">Вход</div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+{% endblock %}

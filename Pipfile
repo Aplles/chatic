@@ -1,0 +1,36 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+djangorestframework = "==3.13.3"
+channels-redis = "*"
+django-allauth = "*"
+django-debug-toolbar = "*"
+django-imagekit = "*"
+async-timeout = "*"
+channels = "==3.0.4"
+django = "==4.0.0"
+generics = "*"
+requests = "*"
+python-decouple = "*"
+celery = "*"
+pillow = "*"
+psycopg2 = "*"
+gunicorn = "*"
+django-service-objects = "*"
+django-utils-six = "*"
+daphne = "*"
+redis = "*"
+eventlet = "*"
+flower = "*"
+drf-yasg = "*"
+coreapi = "*"
+django-split-settings = "*"
+pipenv = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.10"

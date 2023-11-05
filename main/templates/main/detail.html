@@ -1,0 +1,47 @@
+{% extends 'main/layout.html' %}
+{% load static %}
+
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+
+    <div class="auth_logo">
+            <h1>Профиль {{ table.user.username }}</h1>
+    </div>
+
+        <div class="auth_block_space">
+            <div class="profile_card">
+                <div class="auth_block">
+
+                    <div class="image_container" >
+                        {% if object.avatar.url %}
+                        <img class="img-profile" src="{{object.avatar.url}}" />
+                        {% else %}
+                        <img class="img-profile" src="media/profile_images/avatar_site.jpg"/>
+                        {% endif %}
+                        <h1 class="profile_name">{{ table.user.first_name }}, {{ table.age }}</h1>
+                    </div>
+
+
+                    <div class="user_info">
+                        <div class="info_inside">
+
+                            <h>Информация о пользователе</h>
+                            <p><b>Увлечения: </b>{{ table.hobbies|default:"Не указано" }}</p>
+                            <p><b>Город: </b>{{ table.city|default:"Не указано" }}</p>
+                            <p><b>Цель: </b>{{ table.aim|default:"Не указано" }}</p>
+                            <p><b>Последний вход: </b>{{ table.user.last_login }}</p>
+                            <p><b>О себе: </b>{{ table.bio|default:"Не указано" }}</p>
+                            <p><b>Друзья: </b>{{ table.get_friends_no }}</p>
+                        </div>
+
+                    </div>
+
+
+                </div>
+            </div>
+
+        </div>
+
+
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends 'main/layout.html' %}
+
+{% block title %}LogIn{% endblock %}
+
+{% block content %}
+
+    <div class="auth_logo">
+        <h1>Вход</h1>
+    </div>
+
+    <div class="auth_block_space">
+        <div class="auth_block">
+            <div class="form_container">
+                <form method="post" action="{% url 'login' %}">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <div class="register_button_div">
+                        <button class="submit_button" type="submit">Войти</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div> 
+
+
+{% endblock %}
