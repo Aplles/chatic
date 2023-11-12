@@ -57,7 +57,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'CurioSpace.wsgi.application'
-ASGI_APPLICATION = 'CurioSpace.asgi.application'
+ASGI_APPLICATION = 'CurioSpace.routing.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
@@ -120,7 +120,6 @@ LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
 
 REDIS_HOST = '127.0.0.1'
-REDIS_PORT = '6379'
 
 CHANNEL_LAYERS = {
     "default": {
