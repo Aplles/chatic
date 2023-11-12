@@ -28,6 +28,7 @@ drf-yasg = "*"
 coreapi = "*"
 django-split-settings = "*"
 djangorestframework = "==3.13.1"
+django-cors-headers = "*"
 
 [dev-packages]
 
