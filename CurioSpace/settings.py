@@ -119,7 +119,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
 
-REDIS_HOST = '31.184.254.131'
+REDIS_HOST = '127.0.0.1'
 
 CHANNEL_LAYERS = {
     "default": {
