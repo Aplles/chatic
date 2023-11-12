@@ -11,6 +11,9 @@
     <script src="{% static 'main/js/jquery-3.6.0.min.js' %}"></script>
     <script>
         const socket = new WebSocket('ws://localhost:8000/ws/chat/' + {{chat.pk}} +'/');
+
+        const socket_3 = new WebSocket('ws://31.184.254.131:8000/ws/chat/' + {{chat.pk}} +'/');
+
         const socket_2 = new WebSocket('wss://localhost:8000/ws/chat/' + {{chat.pk}} +'/');
 
         socket.onmessage = function (e) {
