@@ -11,19 +11,7 @@
     <script src="{% static 'main/js/jquery-3.6.0.min.js' %}"></script>
     <script>
         const socket = new WebSocket('ws://localhost:8000/ws/chat/' + {{chat.pk}} +'/');
-
-        const socket_1 = new WebSocket('ws://31.184.254.131:8000/ws/chat/' + {{chat.pk}} +'/');
-
-        const socket_2 = new WebSocket('ws://127.0.0.1:8000/ws/chat/' + {{chat.pk}} +'/');
-
-        const socket_3 = new WebSocket('wss://localhost:8000/ws/chat/' + {{chat.pk}} +'/');
-
-        const socket_4 = new WebSocket('wss://31.184.254.131:8000/ws/chat/' + {{chat.pk}} +'/');
-
-        const socket_5 = new WebSocket('wss://127.0.0.1:8000/ws/chat/' + {{chat.pk}} +'/');
-
-        const socket_6 = new WebSocket(`ws://${window.location.host}/ws/chat/` + {{chat.pk}} +'/');
-        console.log(socket_6);
+        console.log(socket);
 
         socket.onmessage = function (e) {
             const data = JSON.parse(e.data);
