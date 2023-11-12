@@ -5,3 +5,6 @@ redis-cli ping
 gunicorn CurioSpace.asgi:application -w 4 -k uvicorn.workers.UvicornWorker
 
 gunicorn CurioSpace.asgi:application --uds /run/gunicorn.sock
+
+
+/root/.local/share/virtualenvs/chatic-thr6zit3/bin/gunicorn CurioSpace.routing:application -w 4 -k uvicorn.workers.UvicornWorker --bind unix:/run/gunicorn.sock
