@@ -1,38 +1,30 @@
 import json
-from channels.generic.websocket import AsyncJsonWebsocketConsumer
+from asgiref.sync import async_to_sync
+from channels.generic.websocket import WebsocketConsumer
 
 
-class WSChatView(AsyncJsonWebsocketConsumer):
-    async def connect(self):
-        self.room_group_name = 'status_post_for_room_' + str(self.scope['url_route']['kwargs']['id'])
-        await self.channel_layer.group_add(
+class WSChatView(WebsocketConsumer):
+    def connect(self):
+        self.room_group_name = 'post_for_room_' + str(self.scope['url_route']['kwargs']['id'])
+        async_to_sync(self.channel_layer.group_add)(
             self.room_group_name,
             self.channel_name
         )
-        await self.accept()
+        self.accept()
 
-    async def receive(self, **kwargs):
+    def disconnect(self, close_code):
+        async_to_sync(
+            self.channel_layer.group_discard(
+                self.room_group_name,
+                self.channel_name
+            )
+        )
+
+    def receive(self, **kwargs):
         data = json.loads(kwargs['text_data'])
-        await self.channel_layer.group_send(
+        async_to_sync(self.channel_layer.group_send)(
             self.room_group_name,
             {
-                'type': 'message',
-                'message': data.get('message'),
-                'user': data.get('user'),
-                'user_name': data.get('user_name'),
-                'avatar':data.get('avatar'),
-                'slug_user':data.get('slug_user'),
-                'file_content': data.get("file_content"),
-                'file_name': data.get("file_name"),
-                'is_image': data.get("is_image"),
+                **data
             }
-        )
-
-    async def message(self, event):
-        await self.send_json(event, close=False)
-
-    async def disconnect(self, close_code):
-        await self.channel_layer.group_discard(
-            self.room_group_name,
-            self.channel_name
         )
