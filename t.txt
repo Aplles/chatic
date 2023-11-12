@@ -1,10 +1,15 @@
-[Unit]
-Description=gunicorn daemon
-Requires=gunicorn.socket
-After=network.target
 
-[Service]
-User=root
-Group=root
-WorkingDirectory=/root/chatic
-ExecStart=/root/.local/share/virtualenvs/chatic-thr6zit3/bin/gunicorn CurioSpace.asgi:application -w 4 -k uvicorn.workers.UvicornWorker --bind unix:/run/gunicorn.sock
+location / {
+    proxy_set_header Host $http_host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_buffering off;
+    proxy_read_timeout 86400s;
+    proxy_pass http://unix:/run/gunicorn.sock;
+
+    # Enable WebSocket support
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "upgrade";
+}
