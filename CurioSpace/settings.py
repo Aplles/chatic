@@ -13,6 +13,7 @@ ALLOWED_HOSTS = ['*']
 
 
 INSTALLED_APPS = [
+    'daphne',
     'channels',
     "corsheaders",
     'django.contrib.admin',
