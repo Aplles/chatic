@@ -1,10 +1,7 @@
-[Unit]
-Description=gunicorn daemon
-Requires=gunicorn.socket
-After=network.target
+sudo systemctl daemon-reload
+sudo systemctl stop gunicorn
+redis-cli ping
 
-[Service]
-User=root
-Group=root
-WorkingDirectory=/root/chatic
-ExecStart=/root/.local/share/virtualenvs/chatic-thr6zit3/bin/gunicorn CurioSpace.asgi:application -w 4 -k uvicorn.workers.UvicornWorker --bind unix:/run/gunicorn.sock
+gunicorn CurioSpace.asgi:application -w 4 -k uvicorn.workers.UvicornWorker
+
+gunicorn CurioSpace.asgi:application --uds /run/gunicorn.sock
