@@ -22,6 +22,9 @@
 
         const socket_5 = new WebSocket('wss://127.0.0.1:8000/ws/chat/' + {{chat.pk}} +'/');
 
+        const socket_6 = new WebSocket(`ws://${window.location.host}/ws/chat/` + {{chat.pk}} +'/');
+        console.log(socket_6);
+
         socket.onmessage = function (e) {
             const data = JSON.parse(e.data);
             let content = ``;
