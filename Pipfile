@@ -4,7 +4,6 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-djangorestframework = "==3.13.3"
 channels-redis = "*"
 django-allauth = "*"
 django-debug-toolbar = "*"
@@ -18,7 +17,7 @@ python-decouple = "*"
 celery = "*"
 pillow = "*"
 psycopg2 = "*"
-gunicorn = "*"
+uvicorn = "*"
 django-service-objects = "*"
 django-utils-six = "*"
 daphne = "*"
@@ -28,7 +27,7 @@ flower = "*"
 drf-yasg = "*"
 coreapi = "*"
 django-split-settings = "*"
-pipenv = "*"
+djangorestframework = "==3.13.1"
 
 [dev-packages]
 
