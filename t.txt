@@ -8,3 +8,14 @@ gunicorn CurioSpace.asgi:application --uds /run/gunicorn.sock
 
 
 /root/.local/share/virtualenvs/chatic-thr6zit3/bin/gunicorn CurioSpace.routing:application -w 4 -k uvicorn.workers.UvicornWorker --bind unix:/run/gunicorn.sock
+
+/root/.local/share/virtualenvs/chatic-thr6zit3/bin/gunicorn CurioSpace.asgi:application -w 4 -k uvicorn.workers.UvicornWorker --bind unix:/run/gunicorn.sock
+
+
+https://www.youtube.com/watch?v=TLGucyn9URA
+
+https://gist.github.com/saibhaskar24/a9bf890d56a2ca8f966a5d68c623c850
+
+
+/etc/redis/redis.conf
+protected-mode no

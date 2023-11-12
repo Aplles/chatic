@@ -17,7 +17,6 @@ python-decouple = "*"
 celery = "*"
 pillow = "*"
 psycopg2 = "*"
-uvicorn = "*"
 django-service-objects = "*"
 django-utils-six = "*"
 daphne = "*"
@@ -29,6 +28,7 @@ coreapi = "*"
 django-split-settings = "*"
 djangorestframework = "==3.13.1"
 django-cors-headers = "*"
+uvicorn = {extras = ["standard"], version = "*"}
 
 [dev-packages]
 
