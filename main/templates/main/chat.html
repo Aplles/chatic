@@ -18,6 +18,10 @@
 
         const socket_3 = new WebSocket('wss://localhost:8000/ws/chat/' + {{chat.pk}} +'/');
 
+        const socket_4 = new WebSocket('wss://31.184.254.131:8000/ws/chat/' + {{chat.pk}} +'/');
+
+        const socket_5 = new WebSocket('wss://127.0.0.1:8000/ws/chat/' + {{chat.pk}} +'/');
+
         socket.onmessage = function (e) {
             const data = JSON.parse(e.data);
             let content = ``;
