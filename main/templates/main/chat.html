@@ -10,7 +10,7 @@
 
     <script src="{% static 'main/js/jquery-3.6.0.min.js' %}"></script>
     <script>
-        const socket = new WebSocket('ws://31.184.254.131:8000/ws/chat/' + {{chat.pk}} +'/');
+        const socket = new WebSocket('ws://31.184.254.131/ws/chat/' + {{chat.pk}} +'/');
         console.log(socket);
 
         socket.onmessage = function (e) {
