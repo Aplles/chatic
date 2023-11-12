@@ -57,7 +57,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'CurioSpace.wsgi.application'
-ASGI_APPLICATION = 'CurioSpace.routing.application'
+ASGI_APPLICATION = 'CurioSpace.asgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
