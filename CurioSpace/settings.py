@@ -67,7 +67,7 @@ DATE_INPUT_FORMATS = ['%d-%m-%Y']
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'curiospacedb',
+        'NAME': BASE_DIR / 'curiospacedb.sqlite3',
     }
 }
 

@@ -9,7 +9,7 @@ from .utils import get_random_code
 from django.template.defaultfilters import slugify
 from django.shortcuts import reverse
 
-class Chat(models.Model):
+class Chat(models.Model):      #модель с чатами
     title = models.CharField(max_length=255)
     owner = models.ForeignKey(
         User,
@@ -24,7 +24,7 @@ class Chat(models.Model):
     updated_at = models.DateTimeField(auto_now=True, verbose_name='Дата обновления')
 
 
-class Message(models.Model):
+class Message(models.Model):     # модель с сообщениями
     message = models.CharField(
         max_length=255,
         null=True,
@@ -61,7 +61,7 @@ class Message(models.Model):
     def document_name(self):
         return "".join(self.document.name.split('/')[1:])
 
-class ProfileManager(models.Manager):
+class ProfileManager(models.Manager):    # класс для управления и получения данных из таблицы Profile (было создано для добавления, удаления из друзей и тп)
 
     def get_all_profiles_to_invite(self, sender):
         profiles = Profile.objects.all().exclude(user=sender)
@@ -89,7 +89,7 @@ class ProfileManager(models.Manager):
         return profiles
 
 
-class Profile(models.Model):
+class Profile(models.Model):          # модель для ползователей с их доп инфой
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     friends = models.ManyToManyField(User, related_name='friends', blank = True)
@@ -127,6 +127,8 @@ class Profile(models.Model):
     def get_friends_no(self):
         return self.friends.all().count()
 
+    def get_date(self):
+        return self.created.date()
 
 
     def save(self, *args, **kwargs):
@@ -140,14 +142,14 @@ STATUS_CHOICES = (
     ('accepted', 'accepted'),
 )
 
-class RelationshipManager(models.Manager):
+class RelationshipManager(models.Manager):    # класс для создания связей между пользователями (для добавления в друзья и прочее)
     def invatations_received(self, receiver):
         qs = Relationship.objects.filter(receiver=receiver, status='send')
         return qs
 
 
 
-class Relationship(models.Model):
+class Relationship(models.Model):    #модель со связями между пользователями
     sender = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='sender')
     receiver = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='receiver')
     status = models.CharField(max_length=8, choices=STATUS_CHOICES)

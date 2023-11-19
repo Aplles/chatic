@@ -20,19 +20,23 @@
                         <img class="img-profile" src="media/profile_images/avatar_site.jpg"/>
                         {% endif %}
                         <h1 class="profile_name">{{ table.user.first_name }}, {{ table.age }}</h1>
+                        <p style="font-size: 0.7rem;">На сайте с {{ created }} </p>
                     </div>
 
 
                     <div class="user_info">
                         <div class="info_inside">
+                            <p><b>Друзья: </b>{{ table.get_friends_no }}</p>
+                            <br/>
 
                             <h>Информация о пользователе</h>
+                            <hr class="hr_inf">
                             <p><b>Увлечения: </b>{{ table.hobbies|default:"Не указано" }}</p>
                             <p><b>Город: </b>{{ table.city|default:"Не указано" }}</p>
                             <p><b>Цель: </b>{{ table.aim|default:"Не указано" }}</p>
-                            <p><b>Последний вход: </b>{{ table.user.last_login }}</p>
+
                             <p><b>О себе: </b>{{ table.bio|default:"Не указано" }}</p>
-                            <p><b>Друзья: </b>{{ table.get_friends_no }}</p>
+
                         </div>
 
                     </div>

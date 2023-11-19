@@ -19,3 +19,11 @@ https://gist.github.com/saibhaskar24/a9bf890d56a2ca8f966a5d68c623c850
 
 /etc/redis/redis.conf
 protected-mode no
+
+
+
+sudo systemctl stop gunicorn
+sudo systemctl stop gunicorn.socket
+
+sudo systemctl disable gunicorn
+sudo systemctl disable gunicorn.socket

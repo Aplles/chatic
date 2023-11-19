@@ -57,9 +57,11 @@ class LoginForm(AuthenticationForm):
 
 class UpdateUserForm(forms.ModelForm):
     first_name = forms.CharField(max_length=100,
+                                 label='Имя',
                                required=True,
                                widget=forms.TextInput(attrs={'class': 'form-control'}))
     email = forms.EmailField(required=True,
+                             label='Email',
                              widget=forms.TextInput(attrs={'class': 'form-control'}))
 
     class Meta:
@@ -68,11 +70,12 @@ class UpdateUserForm(forms.ModelForm):
 
 
 class UpdateProfileForm(forms.ModelForm):
-    avatar = forms.ImageField(widget=forms.FileInput(attrs={'class': 'form-control-file'}))
-    bio = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 5}))
-    hobbies = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 2}))
-    aim = forms.CharField()
-    city = forms.CharField()
+    avatar = forms.ImageField(label='Аватар',widget=forms.FileInput(attrs={'class': 'form-control-file'}))
+    bio = forms.CharField(label='О себе',widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 5}))
+    hobbies = forms.CharField(label='Хобби',widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 2}))
+    aim = forms.CharField(label='Цели')
+    city = forms.CharField(label='Город')
+    age = forms.IntegerField(label='Возраст')
     class Meta:
         model = Profile
         fields = ['avatar', 'age', 'hobbies', 'aim', 'bio', 'city']

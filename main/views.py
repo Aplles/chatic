@@ -28,46 +28,213 @@ from .models import *
 
 from django.http import HttpResponse
 
-
-class ChatListView(View):
-
-    def get(self, request, *args, **kwargs):
-        return render(request, 'main/chats.html', context={
-            'chats': Chat.objects.all()
-        })
-
-
-class ChatSearchView(View):
+class ChatListView(View):   #список чатов
 
     def get(self, request, *args, **kwargs):
-        return render(request, 'main/chats.html', context={
-            'chats': Chat.objects.filter(title__icontains=request.GET.get("search"))
-        })
 
+        if request.user.is_authenticated:
+
+            table = Profile.objects.get(user_id=request.user.id)
+
+            qs = Relationship.objects.invatations_received(table)  # Sent invatations
+            results = list(map(lambda x: x.sender, qs))
+            is_empty_f = False
+            if len(results) == 0:
+                is_empty_f = True
+
+            friends_list = table.get_friends()
+
+            user1 = request.user
+            qs1 = Profile.objects.get_all_profiles(user1)  # All users
+
+            qs2 = Profile.objects.get_all_profiles_to_invite(user1)  # Available to add users
+
+            user = User.objects.get(username__iexact=user1)
+            profile = Profile.objects.get(user=user)
+            rel_r = Relationship.objects.filter(sender=profile)
+            rel_s = Relationship.objects.filter(receiver=profile)
+            rel_receiver = []
+            rel_sender = []
+            for item in rel_r:
+                rel_receiver.append(item.receiver.user)
+            for item in rel_s:
+                rel_receiver.append(item.sender.user)
+            is_empty = False
+            if len(qs1) == 0:
+                is_empty = True
+
+            return render(request, 'main/chats.html', context={
+                'chats': Chat.objects.all(),
+                'table': table,
+                'qs': results,
+                'qs1': qs1, 'qs2': qs2,
+                'rel_receiver': rel_receiver,
+                'rel_sender': rel_sender,
+                'is_empty': is_empty,
+                'is_empty_f': is_empty_f,
+                'friends_list': friends_list
+
+
+            })
+        return redirect('home')
+
+
+
+
+
+
+class ChatSearchView(View): #поиск чата
+
+    def get(self, request, *args, **kwargs):
+
+        if request.user.is_authenticated:
+
+            table = Profile.objects.get(user_id=request.user.id)
+
+            qs = Relationship.objects.invatations_received(table)  # Sent invatations
+            results = list(map(lambda x: x.sender, qs))
+            is_empty_f = False
+            if len(results) == 0:
+                is_empty_f = True
+
+            friends_list = table.get_friends()
+
+            user1 = request.user
+            qs1 = Profile.objects.get_all_profiles(user1)  # All users
+
+            qs2 = Profile.objects.get_all_profiles_to_invite(user1)  # Available to add users
+
+            user = User.objects.get(username__iexact=user1)
+            profile = Profile.objects.get(user=user)
+            rel_r = Relationship.objects.filter(sender=profile)
+            rel_s = Relationship.objects.filter(receiver=profile)
+            rel_receiver = []
+            rel_sender = []
+            for item in rel_r:
+                rel_receiver.append(item.receiver.user)
+            for item in rel_s:
+                rel_receiver.append(item.sender.user)
+            is_empty = False
+            if len(qs1) == 0:
+                is_empty = True
+
+        return render(request, 'main/chats.html', context={
+            'chats': Chat.objects.filter(title__icontains=request.GET.get('search')),
+            'table': table,
+            'qs': results,
+            'qs1': qs1, 'qs2': qs2,
+            'rel_receiver': rel_receiver,
+            'rel_sender': rel_sender,
+            'is_empty': is_empty,
+            'is_empty_f': is_empty_f,
+            'friends_list': friends_list
+        })
 
 class ChatsUserListView(View):
     def get(self, request, *args, **kwargs):
-        return render(request, 'main/chats.html', context={
-            'chats': Chat.objects.filter(
-                messages_chat__user=request.user.id
-            ).annotate(num_messages=Count('messages_chat')).filter(num_messages__gt=0)
-        })
+
+        if request.user.is_authenticated:
+
+            table = Profile.objects.get(user_id=request.user.id)
+
+            qs = Relationship.objects.invatations_received(table)  # Sent invatations
+            results = list(map(lambda x: x.sender, qs))
+            is_empty_f = False
+            if len(results) == 0:
+                is_empty_f = True
+
+            friends_list = table.get_friends()
+
+            user1 = request.user
+            qs1 = Profile.objects.get_all_profiles(user1)  # All users
+
+            qs2 = Profile.objects.get_all_profiles_to_invite(user1)  # Available to add users
+
+            user = User.objects.get(username__iexact=user1)
+            profile = Profile.objects.get(user=user)
+            rel_r = Relationship.objects.filter(sender=profile)
+            rel_s = Relationship.objects.filter(receiver=profile)
+            rel_receiver = []
+            rel_sender = []
+            for item in rel_r:
+                rel_receiver.append(item.receiver.user)
+            for item in rel_s:
+                rel_receiver.append(item.sender.user)
+            is_empty = False
+            if len(qs1) == 0:
+                is_empty = True
 
 
-class ChatDetailView(View):
+            return render(request, 'main/chats.html', context={
+                'chats': Chat.objects.filter(
+                    messages_chat__user=request.user.id
+                ).annotate(num_messages=Count('messages_chat')).filter(num_messages__gt=0),
+                'table': table,
+                'qs': results,
+                'qs1': qs1, 'qs2': qs2,
+                'rel_receiver': rel_receiver,
+                'rel_sender': rel_sender,
+                'is_empty': is_empty,
+                'is_empty_f': is_empty_f,
+                'friends_list': friends_list
+            })
+        return redirect('home')
+
+
+class ChatDetailView(View):   #открытие чата и просмотр сообщений
 
     def get(self, request, *args, **kwargs):
+
+        if request.user.is_authenticated:
+
+            table = Profile.objects.get(user_id=request.user.id)
+
+            qs = Relationship.objects.invatations_received(table)  # Sent invatations
+            results = list(map(lambda x: x.sender, qs))
+            is_empty_f = False
+            if len(results) == 0:
+                is_empty_f = True
+
+            friends_list = table.get_friends()
+
+            user1 = request.user
+            qs1 = Profile.objects.get_all_profiles(user1)  # All users
+
+            qs2 = Profile.objects.get_all_profiles_to_invite(user1)  # Available to add users
+
+            user = User.objects.get(username__iexact=user1)
+            profile = Profile.objects.get(user=user)
+            rel_r = Relationship.objects.filter(sender=profile)
+            rel_s = Relationship.objects.filter(receiver=profile)
+            rel_receiver = []
+            rel_sender = []
+            for item in rel_r:
+                rel_receiver.append(item.receiver.user)
+            for item in rel_s:
+                rel_receiver.append(item.sender.user)
+            is_empty = False
+            if len(qs1) == 0:
+                is_empty = True
+
         chat = Chat.objects.get(id=kwargs['id'])
 
         return render(request, 'main/chat.html', context={
             'chat': chat,
             'messages': chat.messages_chat.all(),
-            'user': request.user,
-            'profile': Profile.objects.get(user=request.user)
+            'user' : request.user,
+            'profile' : Profile.objects.get(user=request.user),
+            'table': table,
+            'qs': results,
+            'qs1': qs1, 'qs2': qs2,
+            'rel_receiver': rel_receiver,
+            'rel_sender': rel_sender,
+            'is_empty': is_empty,
+            'is_empty_f': is_empty_f,
+            'friends_list': friends_list
         })
 
 
-class MessageCreateView(APIView):
+class MessageCreateView(APIView):  #отправка сообщений
 
     @property
     @lru_cache
@@ -119,9 +286,11 @@ class MessageCreateView(APIView):
         return Response({})
 
 
-class ProfileDetailView(DetailView):
+class ProfileDetailView(DetailView): #подробный просмотр профиля
     model = Profile
     template_name = 'main/detail.html'
+
+
 
     # def get_object(self, **kwargs):
     #     slug = self.kwargs.get('slug')
@@ -143,16 +312,16 @@ class ProfileDetailView(DetailView):
         context["rel_receiver"] = rel_receiver
         context["rel_sender"] = rel_sender
         context['table'] = self.get_object()
+        context['created'] = profile.get_date()
 
         return context
-
 
 def profile(request):
     if request.user.is_authenticated:
 
-        table = Profile.objects.get(user_id=request.user.id)
+        table = Profile.objects.get(user_id = request.user.id)
 
-        qs = Relationship.objects.invatations_received(table)  # Sent invatations
+        qs = Relationship.objects.invatations_received(table)  #Sent invatations
         results = list(map(lambda x: x.sender, qs))
         is_empty_f = False
         if len(results) == 0:
@@ -161,9 +330,13 @@ def profile(request):
         friends_list = table.get_friends()
 
         user1 = request.user
-        qs1 = Profile.objects.get_all_profiles(user1)  # All users
+        qs1 = Profile.objects.get_all_profiles(user1)  #All users
+
+
 
         qs2 = Profile.objects.get_all_profiles_to_invite(user1)  # Available to add users
+
+
 
         if request.method == 'POST':
             user_form = UpdateUserForm(request.POST, instance=request.user)
@@ -177,6 +350,8 @@ def profile(request):
         else:
             user_form = UpdateUserForm(instance=request.user)
             profile_form = UpdateProfileForm(instance=request.user.profile)
+
+
 
         user = User.objects.get(username__iexact=user1)
         profile = Profile.objects.get(user=user)
@@ -192,15 +367,19 @@ def profile(request):
         if len(qs1) == 0:
             is_empty = True
 
+
+
         return render(request, 'main/profile.html', {'user_form': user_form, 'profile_form': profile_form,
-                                                     'table': table, 'qs': results, 'qs1': qs1, 'qs2': qs2,
-                                                     'rel_receiver': rel_receiver, 'rel_sender': rel_sender,
-                                                     'is_empty': is_empty, 'is_empty_f': is_empty_f,
-                                                     'friends_list': friends_list})
+                                                     'table' : table, 'qs': results, 'qs1' : qs1, 'qs2' : qs2,
+                                                     'rel_receiver' : rel_receiver, 'rel_sender' : rel_sender,
+                                                     'is_empty' : is_empty, 'is_empty_f' : is_empty_f,
+                                                     'friends_list' : friends_list})
     return render(request, 'main/profile.html')
 
 
-def send_invatation(request):
+
+
+def send_invatation(request):      #отправить приглашение в друзья
     if request.method == 'POST':
         pk = request.POST.get('profile_pk')
         user = request.user
@@ -212,8 +391,7 @@ def send_invatation(request):
         return redirect(request.META.get('HTTP_REFERER'))
     return redirect('home')
 
-
-def remove_from_friends(request):
+def remove_from_friends(request):    #удалить из друзей
     if request.method == 'POST':
         pk = request.POST.get('profile_pk')
         user = request.user
@@ -229,9 +407,9 @@ def remove_from_friends(request):
     return redirect('home')
 
 
-@login_required
-def accept_invatation(request):
-    if request.method == "POST":
+@login_required(login_url='login')
+def accept_invatation(request):    # принять запрос в друзья
+    if request.method=="POST":
         pk = request.POST.get('profile_pk')
         sender = Profile.objects.get(pk=pk)
         receiver = Profile.objects.get(user=request.user)
@@ -240,10 +418,8 @@ def accept_invatation(request):
             rel.status = 'accepted'
             rel.save()
     return redirect('home')
-
-
-@login_required
-def reject_invatation(request):
+@login_required(login_url='login')
+def reject_invatation(request):   # отклонить запрос
     if request.method == 'POST':
         pk = request.POST.get('profile_pk')
         sender = Profile.objects.get(pk=pk)
@@ -252,8 +428,7 @@ def reject_invatation(request):
         rel.delete()
     return redirect('home')
 
-
-def register(request):
+def register(request):    #регистрация пользователя
     if request.method == 'POST':
         form = RegistrationForm(request.POST)
         if form.is_valid():
@@ -270,22 +445,10 @@ def register(request):
     return render(request, 'main/register.html', {'form': form})
 
 
-# def login(request):
-#     if request.method == 'POST':
-#         form = AuthenticationForm(request.POST)
-#         if form.is_valid():
-#             username = form.cleaned_data.get('username')
-#             password = form.cleaned_data.get('password')
-#             user = authenticate(username=username, password=password)
-#             if user is not None:
-#                 auth_login(request, user)
-#                 return redirect('home')
-#     else:
-#         form = AuthenticationForm()
-#     return render(request,'main/login.html')
 
 
-class UserLoginView(SuccessMessageMixin, LoginView):
+
+class UserLoginView(SuccessMessageMixin, LoginView):    #Вход пользователя в аккаунт
     form_class = LoginForm
     template_name = 'registration/login.html'
     next_page = 'home'
@@ -295,17 +458,8 @@ class UserLoginView(SuccessMessageMixin, LoginView):
         context['title'] = 'Авторизация на сайте'
         return context
 
-
-class UserLogoutView(LogoutView):
+class UserLogoutView(LogoutView):    #выход из аккаунта
     next_page = 'home'
 
-# class ShowProfilePageView(DetailView):
-#     model = Profile
-#     template_name = 'main/profile.html'
-#
-#     def get_context_data(self, *args, **kwargs):
-#         users = Profile.objects.all()
-#         context = super(ShowProfilePageView, self).get_context_data(*args, **kwargs)
-#         page_user = get_object_or_404(Profile, id=self.kwargs['pk'])
-#         context['page_user'] = page_user
-#         return context
+
+
