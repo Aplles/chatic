@@ -9,7 +9,7 @@ class RegistrationForm(UserCreationForm):
 
     username = forms.CharField(
         label='Логин',
-        help_text='<span class="help-text"><br> - Должен быть уникальным</span>',
+        help_text='Должен быть уникальным',
     )
 
     email = forms.EmailField(
@@ -22,13 +22,13 @@ class RegistrationForm(UserCreationForm):
         label='Пароль',
         
         widget=forms.PasswordInput(),
-        help_text='<span class="help-text"><br> - Минимальная длина пароля: 8 символов <br> - Пароль не может содержать только цифры</span>',
+        help_text='Минимальная длина пароля: 8 символов - Пароль не может содержать только цифры',
     )
 
     password2 = forms.CharField(
         label='Повторите пароль',
         widget=forms.PasswordInput(),
-        help_text='<span class="help-text"></span>',
+        help_text='',
     )
 
     def clean_email(self):
