@@ -4,8 +4,7 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 
 class WSChatView(AsyncWebsocketConsumer):
     async def connect(self):
-        self.room_name = 'post_for_room_' + str(self.scope['url_route']['kwargs']['id'])
-        self.room_group_name = 'chat_%s' % self.room_name
+        self.room_group_name = 'chat_' + str(self.scope['url_route']['kwargs']['id'])
         await self.channel_layer.group_add(
             self.room_group_name,
             self.channel_name
