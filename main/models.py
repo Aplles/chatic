@@ -9,7 +9,8 @@ from .utils import get_random_code
 from django.template.defaultfilters import slugify
 from django.shortcuts import reverse
 
-class Chat(models.Model):      #модель с чатами
+
+class Chat(models.Model):  # модель с чатами
     title = models.CharField(max_length=255)
     owner = models.ForeignKey(
         User,
@@ -24,7 +25,7 @@ class Chat(models.Model):      #модель с чатами
     updated_at = models.DateTimeField(auto_now=True, verbose_name='Дата обновления')
 
 
-class Message(models.Model):     # модель с сообщениями
+class Message(models.Model):  # модель с сообщениями
     message = models.CharField(
         max_length=255,
         null=True,
@@ -61,13 +62,14 @@ class Message(models.Model):     # модель с сообщениями
     def document_name(self):
         return "".join(self.document.name.split('/')[1:])
 
-class ProfileManager(models.Manager):    # класс для управления и получения данных из таблицы Profile (было создано для добавления, удаления из друзей и тп)
+
+class ProfileManager(
+    models.Manager):  # класс для управления и получения данных из таблицы Profile (было создано для добавления, удаления из друзей и тп)
 
     def get_all_profiles_to_invite(self, sender):
         profiles = Profile.objects.all().exclude(user=sender)
         profile = Profile.objects.get(user=sender)
         qs = Relationship.objects.filter(Q(sender=profile) | Q(receiver=profile))
-
 
         accepted = set([])
 
@@ -76,29 +78,23 @@ class ProfileManager(models.Manager):    # класс для управлени�
                 accepted.add(rel.receiver)
                 accepted.add(rel.sender)
 
-
         available = [profile for profile in profiles if profile not in accepted]
 
-
         return available
-
-
 
     def get_all_profiles(self, me):
         profiles = Profile.objects.all().exclude(user=me)
         return profiles
 
 
-class Profile(models.Model):          # модель для ползователей с их доп инфой
+class Profile(models.Model):  # модель для ползователей с их доп инфой
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
-    friends = models.ManyToManyField(User, related_name='friends', blank = True)
+    friends = models.ManyToManyField(User, related_name='friends', blank=True)
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
 
     objects = ProfileManager()
-
-
 
     avatar = models.ImageField(default='profile_images/avatar_site.jpg', upload_to='profile_images', blank=True)
     hobbies = models.TextField(blank=True)
@@ -115,7 +111,6 @@ class Profile(models.Model):          # модель для ползовател
     def get_absolute_url(self):
         return reverse("profile_detail_view", kwargs={"slug": self.slug})
 
-
     def get_friends(self):
         a = self.friends.all()
         # a = list(map(a, lambda x: Profile.objects.get(User__id=x.id)))
@@ -130,11 +125,9 @@ class Profile(models.Model):          # модель для ползовател
     def get_date(self):
         return self.created.date()
 
-
     def save(self, *args, **kwargs):
         self.slug = slugify(self.user)
         super(Profile, self).save(*args, **kwargs)
-
 
 
 STATUS_CHOICES = (
@@ -142,14 +135,15 @@ STATUS_CHOICES = (
     ('accepted', 'accepted'),
 )
 
-class RelationshipManager(models.Manager):    # класс для создания связей между пользователями (для добавления в друзья и прочее)
+
+class RelationshipManager(
+    models.Manager):  # класс для создания связей между пользователями (для добавления в друзья и прочее)
     def invatations_received(self, receiver):
         qs = Relationship.objects.filter(receiver=receiver, status='send')
         return qs
 
 
-
-class Relationship(models.Model):    #модель со связями между пользователями
+class Relationship(models.Model):  # модель со связями между пользователями
     sender = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='sender')
     receiver = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='receiver')
     status = models.CharField(max_length=8, choices=STATUS_CHOICES)

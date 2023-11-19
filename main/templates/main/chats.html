@@ -115,10 +115,15 @@
                                     <div class="grid1">
                                         <div class="row1">
                                             <div class="column1">
-                                                <img class="ui small circular image"
+                                                {% if obj.avatar.url %}
+                                                    <img class="ui small circular image"
                                                      style="min-width: 5rem; min-height: 5rem; max-width: 5rem; max-height: 5rem; clip-path: circle();"
-                                                     src={{obj.avatar.url}}
-                                                     onerror="this.src='media/profile_images/avatar_site.jpg';">
+                                                     src='{{obj.avatar.url}}'>
+                                                 {% else %}
+                                                       <img class="ui small circular image"
+                                                     style="min-width: 5rem; min-height: 5rem; max-width: 5rem; max-height: 5rem; clip-path: circle();"
+                                                     src='{% static 'img/avatar_site.jpg' %}'>
+                                                {% endif %}
                                             </div>
                                             <div class="column2">
                                                 <h5>{{ obj.user.first_name }}</h5>
