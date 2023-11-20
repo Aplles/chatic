@@ -126,7 +126,8 @@ class Profile(models.Model):  # модель для ползователей с 
         return self.created.date()
 
     def save(self, *args, **kwargs):
-        self.slug = slugify(self.user)
+        # self.slug = slugify(self.user)
+        self.slug = f'{slugify(self.user)}-{uuid4().hex[:8]}'
         super(Profile, self).save(*args, **kwargs)
 
 
