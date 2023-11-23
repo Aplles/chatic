@@ -12,7 +12,7 @@ urlpatterns = [
     path('logout/', UserLogoutView.as_view(), name='logout'),
     path('chat/search/', ChatSearchView.as_view(), name='chats_search'),
     path('chat/search/remove_friend', remove_from_friends, name='remove_friend'),
-
+    path('create_chat/', views.create_chat, name='create_chat'),
     path('chat/', ChatListView.as_view(), name='chats'),
     path('chat/<int:id>/', ChatDetailView.as_view(), name='chat'),
 
