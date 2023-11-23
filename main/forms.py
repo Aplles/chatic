@@ -85,3 +85,13 @@ class UpdateProfileForm(forms.ModelForm):
         fields = ['avatar', 'age', 'hobbies', 'aim', 'bio', 'city']
         for i in fields:
             self.fields[i].required = False
+
+
+class CreateChat(forms.ModelForm):
+    title = forms.CharField(max_length=255, required=True, label='Название')
+
+
+    class Meta:
+        model = Chat
+        fields = ['title']
+
