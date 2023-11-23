@@ -1,0 +1,30 @@
+{% extends 'main/layout.html' %}
+{% load static %}
+
+{% block title %}Create chat{% endblock %}
+
+{% block content %}
+
+<div class="chats_list_space_name">
+    <h1>Создай свой чат!</h1>
+</div>
+<div class="auth_block_space">
+    <div class="profile_card">
+        <div class="auth_block">
+
+            <div style="display: flex;
+    justify-content: center;
+    align-items: center;">
+                <form action="{% url 'create_chat' %}" method="post">
+                    {% csrf_token %}
+                    <h1 style="font-size: 1rem; padding: 0.5rem;">
+                    {{ form.as_p }}
+                    </h1>
+                    <button class="submit_button" type="submit">Создать</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
