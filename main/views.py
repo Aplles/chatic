@@ -462,4 +462,21 @@ class UserLogoutView(LogoutView):    #выход из аккаунта
     next_page = 'home'
 
 
+def create_chat(request):
+
+    if request.method == "POST":
+        form = CreateChat(request.POST)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.save()
+            return redirect('home')
+    else:
+
+        form = CreateChat()
+
+    context = {'form': form}
+    return render(request, 'main/create_chat.html', context)
+
+
+
 
