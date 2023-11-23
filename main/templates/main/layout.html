@@ -84,7 +84,16 @@
                     </span>
                 <h3>Мои чаты</h3>
             </a>
-
+            
+            {% if request.user.is_authenticated %}
+            <a href="{% url 'create_chat' %}">
+                    <span class="material-icons-sharp">
+                        add_circle
+                    </span>
+                <h3>Создать чат</h3>
+            </a>
+            {% endif %}
+            
             {% if request.user.is_authenticated %}
             <a style="cursor: pointer;">
                 <span class="material-symbols-outlined friends button-icon-friends">person_add</span>
